@@ -11,7 +11,16 @@ export default function Login() {
 	const handleLogin = () => {
 		signInWithPopup(auth, provider)
 			.then((res) => {
-				console.log(res._tokenResponse.idToken);
+				res.user.getIdToken().then((idToken) => {
+					fetch('http://localhost:5000/auth/login', {
+						method: 'POST',
+						headers: {
+							Authorization: `Bearer ${idToken}`,
+						},
+					})
+						.then((res) => res.json())
+						.then((data) => console.log(data));
+				});
 			})
 			.catch((err) => {
 				console.log(err);
